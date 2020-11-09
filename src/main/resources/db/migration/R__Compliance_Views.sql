@@ -1,0 +1,4 @@
+CREATE TABLE IF NOT EXISTS TEST_COMPLIANCE (
+	ID varchar(20),
+	NAME varchar(20) 
+);
