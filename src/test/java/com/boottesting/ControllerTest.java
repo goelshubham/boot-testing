@@ -1,6 +1,9 @@
 package com.boottesting;
 
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.junit.Test;
@@ -33,11 +36,13 @@ public class ControllerTest {
 	
 	@Test
 	public void testGetHello() throws Exception {
+		
+		when(protectionService.getHello()).thenReturn("DUMMY VALUE");
+		
 		mvc.perform(MockMvcRequestBuilders
 				.get("/get/hello")	
 				.accept(MediaType.ALL_VALUE))
 				.andDo(print())
-				.andExpect(status().isOk())
-				.andReturn();
+				.andExpect(content().string(containsString("DUMMY VALUE")));
 	}	
 }

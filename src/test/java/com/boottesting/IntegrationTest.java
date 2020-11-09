@@ -1,14 +1,22 @@
 package com.boottesting;
 
+import org.flywaydb.test.annotation.FlywayTest;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import com.boottesting.controller.Data;
+import com.boottesting.controller.RepositoryInterface;
+
+import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 
 
 /*
@@ -22,19 +30,30 @@ import org.springframework.test.context.junit4.SpringRunner;
 @RunWith(SpringRunner.class)
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
+@AutoConfigureEmbeddedDatabase
 public class IntegrationTest {
 
 	@LocalServerPort
 	private int port;
 	
+	@Value("${name}")
+	private String name;
+	
 	private TestRestTemplate testRestTemplate = new TestRestTemplate();
+	
+	@Autowired
+	private RepositoryInterface repo;
+	
+	@Before
+	public void setUp() throws Exception {
+		Data data = new Data("1", "Embedded Postgres");
+		repo.save(data);		
+	}
 	
 	@Test
 	public void integrationTest() throws Exception {
-		
 		String response = testRestTemplate.getForObject("http://localhost:" + port + "/get/hello", String.class);
-		System.out.println(response);
-		
+		System.out.println(response);		
 	}
 	
 	
